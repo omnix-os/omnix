@@ -1,4 +1,4 @@
-name: Pants Tests
+name: Test & Lint
 
 on:
   push:
