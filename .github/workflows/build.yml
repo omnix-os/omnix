@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Cache Pants
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pants/setup
+            ~/.cache/pants/named_caches
+            ~/.cache/pants/lmdb_store
+          key: pants-cache-${{ runner.os }}-${{ hashFiles('pants.toml') }}
+          restore-keys: |
+            pants-cache-${{ runner.os }}-
+
+      - name: Install Pants
+        run: |
+          curl --proto '=https' --tlsv1.2 -fsSL https://static.pantsbuild.org/setup/get-pants.sh | bash
+
+      - name: Run Pants package
+        run: |
+          pants --filter-target-type=archive,go_binary,pex_binary,python_distribution list ::|xargs pants package
