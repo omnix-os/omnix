@@ -35,8 +35,8 @@ jobs:
 
       - name: Run Pants Lint
         run: |
-          ./pants lint ::
+          pants lint ::
 
       - name: Run Pants Tests
         run: |
-          ./pants test ::
+          pants test ::
